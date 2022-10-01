@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 
+use App\Models\Link;
+
 class LinkController extends Controller
 {
     /**
@@ -44,9 +46,11 @@ class LinkController extends Controller
         ]);
 
         $link = Auth::user()->links()->create($request->only(['name', 'link']));
+        
         if($link){
             return redirect()->route('links.index');
         }
+
         return redirect()->back();
     }
 
@@ -67,9 +71,15 @@ class LinkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Link $link)
     {
-        //
+        if($link->user_id != Auth::id()){
+            return abort(404);
+        }
+
+        return view('links.edit', [
+            'link' => $link
+        ]);
     }
 
     /**
@@ -79,9 +89,20 @@ class LinkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Link $link)
     {
-        //
+        if($link->user_id != Auth::id()){
+            return abort(403);
+        }
+
+        $request->validate([
+            'name' => 'required|max:255',
+            'link' => 'required|url'
+        ]);
+
+        $link->update($request->only(['name', 'link']));
+        
+        return redirect()->route('links.index');
     }
 
     /**
@@ -90,8 +111,14 @@ class LinkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, Link $link)
     {
-        //
+        if($link->user_id != Auth::id()){
+            return abort(403);
+        }
+
+        $link->delete();
+
+        return redirect()->route('links.index');
     }
 }
