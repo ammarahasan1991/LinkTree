@@ -56,4 +56,9 @@ class User extends Authenticatable
         return $this->hasManyThrough(Visit::class, Link::class);
     }
 
+    // for using username in route instead of id
+    public function getRouteKeyName()
+    {
+        return 'username';
+    }
 }
