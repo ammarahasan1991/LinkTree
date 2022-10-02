@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Auth;
 
 class UserController extends Controller
 {
@@ -20,11 +21,21 @@ class UserController extends Controller
 
     public function edit()
     {
-        return 'UserController@edit';
+        return view('users.edit', [
+            'user' => Auth::user(),
+        ]);
     }
 
-    public function update()
+    public function update(Request $request)
     {
-        return 'UserController@update';
+        // always want full hex e.g. #ff00ff
+        $request->validate([
+            'background_color' => 'required|size:7|starts_with:#',
+            'text_color' => 'required|size:7|starts_with:#',
+        ]);
+
+        Auth::user()->update($request->only(['background_color', 'text_color']));
+
+        return redirect()->back()->with(['success' => 'changes saved successfully']);
     }
 }

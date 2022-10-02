@@ -21,12 +21,13 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::resource('/links', LinkController::class);
 
     // /settings
-    Route::get('/settings', [UserController::class, 'edit']);
-    Route::post('/settings', [UserController::class, 'update']);
+    Route::get('/settings', [UserController::class, 'edit'])->name('settings.edit');
+    Route::put('/settings', [UserController::class, 'update'])->name('settings.update');
 });
 
 // /visit/5
 Route::post('/visit/{link}', [VisitController::class, 'store']) ;
+
 
 // /5 ==> page of user whose id = 5
 Route::get('/{user}', [UserController::class, 'show']);

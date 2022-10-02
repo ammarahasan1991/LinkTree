@@ -8,7 +8,7 @@
                 @foreach ($user->links as $link)
                 <div class="link">
                     <a href="{{ $link->link }}" class="user-link d-block p-4 mb-4 rounded h3 text-center"
-                        target="_blank" rel="nofollow"
+                        data-link-id="{{ $link->id }}" target="_blank" rel="nofollow"
                         style="border: 2px solid {{ $user->text_color }}; color:{{ $user->text_color }}; text-decoration:none;">
                         {{ $link->name }}
                     </a>
